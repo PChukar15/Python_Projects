@@ -3,6 +3,7 @@ from tkinter import *
 import tkinter.filedialog
 import os
 import shutil
+import datetime
 
 
 class ParentWindow(Frame):
@@ -42,9 +43,16 @@ class ParentWindow(Frame):
         source = self.source_dir.get()
         destination = self.destination_dir.get()
         source_files = os.listdir(source)
+        file_mtime = os.path.getmtime(source)
+        current_time = datetime.datetime.now()
+        time_difference = current_time - datetime.datetime.fromtimestamp(file_mtime)
+        print(current_time)
+        print(file_mtime)
+        print(time_difference)
         for i in source_files:
-            shutil.move(source + '/' + i, destination)
-            print(i + ' was successfully transferred')
+            if time_difference < datetime.timedelta(hours=24):
+                shutil.move(source + '/' + i, destination)
+                print(i + ' was successfully transferred')
 
     def exit_program(self):
         root.destroy()
